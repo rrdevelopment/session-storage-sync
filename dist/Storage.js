@@ -1,13 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var v1_1 = require("uuid/v1");
+var uuid = require("uuid/v1");
 var constants_1 = require("./constants");
 var LocalStorage_1 = require("./LocalStorage");
 var SessionStorage_1 = require("./SessionStorage");
 var Storage = (function () {
     function Storage(ignoredKeys) {
         this._isInitialized = false;
-        this._sessionId = v1_1.default();
+        this._sessionId = uuid();
         this._ignored = [].concat(ignoredKeys);
         this._ignored.push(constants_1.SESSION_STORAGE_ID);
         this._local = new LocalStorage_1.LocalStorage(window.localStorage);

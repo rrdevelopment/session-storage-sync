@@ -10,7 +10,8 @@
     "noImplicitAny": true,
     "removeComments": true,
     "moduleResolution": "node",
-    "allowJs": false
+    "allowJs": false,
+    "allowSyntheticDefaultImports": false
   },
   "filesGlob": ["./src/**/*.ts", "./test/**/*.ts"],
   "exclude": ["node_modules", "dist", "test"],

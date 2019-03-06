@@ -1,5 +1,5 @@
 // @ts-ignore
-import uuid from 'uuid/v1';
+import * as uuid from 'uuid/v1';
 import {
   ADD_TO_SESSION_STORAGE_KEY,
   CLEAR_SESSION_STORAGE_KEY,
