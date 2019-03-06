@@ -1,7 +1,7 @@
-import { StorageMechanism } from "./StorageMechanism";
+import { StorageMechanism } from './StorageMechanism';
 
 export class LocalStorage extends StorageMechanism {
-    public constructor(storage: Storage) {
-        super(storage);
-    }
+  public constructor(storage: Storage) {
+    super(storage);
+  }
 }
