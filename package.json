@@ -36,5 +36,8 @@
     "directories": {
       "dist": "dist"
     }
+  },
+  "dependencies": {
+    "uuid": "^3.3.2"
   }
 }

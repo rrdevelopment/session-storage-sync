@@ -1,27 +1,20 @@
 {
-    "compileOnSave": false,
-    "compilerOptions": {
-        "rootDir": ".",
-        "outDir": "dist",
-        "sourceMap": false,
-        "target": "es5",
-        "module": "amd",
-        "declaration": false,
-        "noImplicitAny": true,
-        "removeComments": true,
-        "moduleResolution": "node",
-        "allowJs": false
-    },
-    "filesGlob": [
-        "./src/**/*.ts",
-        "./test/**/*.ts"
-    ],
-    "exclude": [
-        "node_modules",
-        "dist",
-        "test"
-    ],
-    "atom": {
-        "rewriteTsconfig": false
-    }
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": ".",
+    "outDir": "dist",
+    "sourceMap": false,
+    "target": "es5",
+    "module": "commonjs",
+    "declaration": false,
+    "noImplicitAny": true,
+    "removeComments": true,
+    "moduleResolution": "node",
+    "allowJs": false
+  },
+  "filesGlob": ["./src/**/*.ts", "./test/**/*.ts"],
+  "exclude": ["node_modules", "dist", "test"],
+  "atom": {
+    "rewriteTsconfig": false
+  }
 }
