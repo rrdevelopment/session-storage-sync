@@ -11,7 +11,8 @@
     "removeComments": true,
     "moduleResolution": "node",
     "allowJs": false,
-    "allowSyntheticDefaultImports": false
+    "allowSyntheticDefaultImports": false,
+    "strictNullChecks": true,
   },
   "filesGlob": ["./src/**/*.ts", "./test/**/*.ts"],
   "exclude": ["node_modules", "dist", "test"],

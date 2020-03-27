@@ -6,26 +6,28 @@ export abstract class StorageMechanism {
   }
 
   public get length() {
-    return this._storage.length;
+    return this._storage?.length;
   }
 
   public get(key: string): any {
-    return JSON.parse(this._storage.getItem(key));
+    const value = this._storage?.getItem(key);
+    return value && JSON.parse(value);
   }
 
   public set(key: string, value: any): void {
-    this._storage.setItem(key, JSON.stringify(value));
+    this._storage?.setItem(key, JSON.stringify(value));
   }
 
   public remove(key: string): void {
-    this._storage.removeItem(key);
+    this._storage?.removeItem(key);
   }
 
   public clear(): void {
-    this._storage.clear();
+    this._storage?.clear();
   }
 
   public key(index: number): any {
-    return JSON.parse(this._storage.key(index));
+    const value = this._storage?.key(index);
+    return value && JSON.parse(value);
   }
 }

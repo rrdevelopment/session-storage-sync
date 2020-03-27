@@ -6,25 +6,33 @@ var StorageMechanism = (function () {
     }
     Object.defineProperty(StorageMechanism.prototype, "length", {
         get: function () {
-            return this._storage.length;
+            var _a;
+            return (_a = this._storage) === null || _a === void 0 ? void 0 : _a.length;
         },
         enumerable: true,
         configurable: true
     });
     StorageMechanism.prototype.get = function (key) {
-        return JSON.parse(this._storage.getItem(key));
+        var _a;
+        var value = (_a = this._storage) === null || _a === void 0 ? void 0 : _a.getItem(key);
+        return value && JSON.parse(value);
     };
     StorageMechanism.prototype.set = function (key, value) {
-        this._storage.setItem(key, JSON.stringify(value));
+        var _a;
+        (_a = this._storage) === null || _a === void 0 ? void 0 : _a.setItem(key, JSON.stringify(value));
     };
     StorageMechanism.prototype.remove = function (key) {
-        this._storage.removeItem(key);
+        var _a;
+        (_a = this._storage) === null || _a === void 0 ? void 0 : _a.removeItem(key);
     };
     StorageMechanism.prototype.clear = function () {
-        this._storage.clear();
+        var _a;
+        (_a = this._storage) === null || _a === void 0 ? void 0 : _a.clear();
     };
     StorageMechanism.prototype.key = function (index) {
-        return JSON.parse(this._storage.key(index));
+        var _a;
+        var value = (_a = this._storage) === null || _a === void 0 ? void 0 : _a.key(index);
+        return value && JSON.parse(value);
     };
     return StorageMechanism;
 }());

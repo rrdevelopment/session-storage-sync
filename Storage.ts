@@ -1,5 +1,5 @@
 // @ts-ignore
-import * as uuid from 'uuid/v1';
+import * as uuid from "uuid/v1";
 import {
   ADD_TO_SESSION_STORAGE_KEY,
   CLEAR_SESSION_STORAGE_KEY,
@@ -8,10 +8,10 @@ import {
   SESSION_STORAGE_ID,
   SET_SESSION_STORAGE_KEY,
   WINDOW_STORAGE_EVENT
-} from './constants';
-import { LocalStorage } from './LocalStorage';
-import { SessionStorage } from './SessionStorage';
-import { StorageMechanism } from './StorageMechanism';
+} from "./constants";
+import { LocalStorage } from "./LocalStorage";
+import { SessionStorage } from "./SessionStorage";
+import { StorageMechanism } from "./StorageMechanism";
 
 export class Storage {
   private _local: LocalStorage;
@@ -20,16 +20,16 @@ export class Storage {
   private _sessionId: string;
   private _isInitialized: boolean = false;
 
-  public constructor(ignoredKeys?: string[]) {
+  public constructor(ignoredKeys: string[] = []) {
     this._sessionId = uuid();
-    this._ignored = [].concat(ignoredKeys);
+    this._ignored = ([] as string[]).concat(ignoredKeys);
     this._ignored.push(SESSION_STORAGE_ID);
 
     this._local = new LocalStorage(window.localStorage);
     this._session = new SessionStorage(window.sessionStorage);
-    this._session.addEventListener('set', this.onSetItem.bind(this));
-    this._session.addEventListener('delete', this.onDeleteItem.bind(this));
-    this._session.addEventListener('clear', this.onClearItems.bind(this));
+    this._session.addEventListener("set", this.onSetItem.bind(this));
+    this._session.addEventListener("delete", this.onDeleteItem.bind(this));
+    this._session.addEventListener("clear", this.onClearItems.bind(this));
 
     this.listenForStorageEvents();
   }
@@ -52,16 +52,15 @@ export class Storage {
 
         if (event == null) return;
 
-        let eventData = null;
-
-        try {
-          eventData = JSON.parse(event.newValue);
-        } catch (ex) {
-          //do nothing
-        }
+        const data = event.newValue;
+        const eventData = data && JSON.parse(data);
 
         //ensure our current tab did not send this event
-        if (eventData != null && eventData[SESSION_STORAGE_ID] === this._sessionId) return;
+        if (
+          eventData != null &&
+          eventData[SESSION_STORAGE_ID] === this._sessionId
+        )
+          return;
 
         if (eventData != null) delete eventData[SESSION_STORAGE_ID];
 
@@ -83,7 +82,10 @@ export class Storage {
           } catch {
             this.local.remove(SET_SESSION_STORAGE_KEY);
           }
-        } else if (event.key === SET_SESSION_STORAGE_KEY && event.newValue != null) {
+        } else if (
+          event.key === SET_SESSION_STORAGE_KEY &&
+          event.newValue != null
+        ) {
           try {
             if (this._isInitialized === true) return;
             this._isInitialized = true;
@@ -95,15 +97,24 @@ export class Storage {
           } catch {
             //do nothing here
           }
-        } else if (event.key === ADD_TO_SESSION_STORAGE_KEY && event.newValue != null) {
+        } else if (
+          event.key === ADD_TO_SESSION_STORAGE_KEY &&
+          event.newValue != null
+        ) {
           try {
             window.sessionStorage.setItem(eventData.key, eventData.value);
           } catch {
             //do nothing here
           }
-        } else if (event.key === DELETE_SESSION_STORAGE_KEY && event.newValue != null) {
+        } else if (
+          event.key === DELETE_SESSION_STORAGE_KEY &&
+          event.newValue != null
+        ) {
           window.sessionStorage.removeItem(eventData.key);
-        } else if (event.key === CLEAR_SESSION_STORAGE_KEY && event.newValue != null) {
+        } else if (
+          event.key === CLEAR_SESSION_STORAGE_KEY &&
+          event.newValue != null
+        ) {
           window.sessionStorage.clear();
         }
       },
@@ -116,7 +127,9 @@ export class Storage {
     // check if this is a new window.. if the session storage has nothing we will trigger
     // an event to request session storage from other tab
     if (this.session.length <= 0) {
-      this.local.set(GET_SESSION_STORAGE_KEY, { [SESSION_STORAGE_ID]: this._sessionId });
+      this.local.set(GET_SESSION_STORAGE_KEY, {
+        [SESSION_STORAGE_ID]: this._sessionId
+      });
       this.local.remove(GET_SESSION_STORAGE_KEY);
     }
   }
@@ -131,12 +144,17 @@ export class Storage {
   }
 
   private onDeleteItem(key: string) {
-    this.local.set(DELETE_SESSION_STORAGE_KEY, { key: key, [SESSION_STORAGE_ID]: this._sessionId });
+    this.local.set(DELETE_SESSION_STORAGE_KEY, {
+      key: key,
+      [SESSION_STORAGE_ID]: this._sessionId
+    });
     this.local.remove(DELETE_SESSION_STORAGE_KEY);
   }
 
   private onClearItems() {
-    this.local.set(CLEAR_SESSION_STORAGE_KEY, { [SESSION_STORAGE_ID]: this._sessionId });
+    this.local.set(CLEAR_SESSION_STORAGE_KEY, {
+      [SESSION_STORAGE_ID]: this._sessionId
+    });
     this.local.remove(CLEAR_SESSION_STORAGE_KEY);
   }
 }
