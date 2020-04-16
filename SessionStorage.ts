@@ -1,4 +1,4 @@
-import { StorageMechanism } from './StorageMechanism';
+import { StorageMechanism } from "./StorageMechanism";
 
 export class SessionStorage extends StorageMechanism {
   private _events: {
@@ -16,7 +16,7 @@ export class SessionStorage extends StorageMechanism {
     super(storage);
   }
 
-  public set(key: string, value: any) {
+  public set(key: string, value: string) {
     super.set(key, value);
     this._events.set.forEach(l => {
       l(key, value);
@@ -37,7 +37,10 @@ export class SessionStorage extends StorageMechanism {
     });
   }
 
-  public addEventListener(event: string, listener: (key?: string, value?: string) => void): void {
+  public addEventListener(
+    event: string,
+    listener: (key?: string, value?: string) => void
+  ): void {
     this._events[event].push(listener);
   }
 }

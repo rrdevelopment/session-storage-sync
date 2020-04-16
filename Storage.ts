@@ -13,6 +13,12 @@ import { LocalStorage } from "./LocalStorage";
 import { SessionStorage } from "./SessionStorage";
 import { StorageMechanism } from "./StorageMechanism";
 
+type EventData = {
+  [SESSION_STORAGE_ID]: string;
+  key?: string;
+  value?: string;
+};
+
 export class Storage {
   private _local: LocalStorage;
   private _session: SessionStorage;
@@ -53,7 +59,14 @@ export class Storage {
         if (event == null) return;
 
         const data = event.newValue;
-        const eventData = data && JSON.parse(data);
+
+        let parsedData: EventData | null | undefined;
+        try {
+          parsedData = data && JSON.parse(data);
+        } catch {
+          // do nothing here
+        }
+        const eventData = parsedData;
 
         //ensure our current tab did not send this event
         if (
@@ -67,7 +80,9 @@ export class Storage {
         if (event.key === GET_SESSION_STORAGE_KEY && event.newValue != null) {
           try {
             if (this.session.length > 0) {
-              let data = JSON.parse(JSON.stringify(window.sessionStorage));
+              let data: { [key: string]: string } = JSON.parse(
+                JSON.stringify(window.sessionStorage)
+              );
 
               //remove any ignored items
               this._ignored.forEach(i => {
@@ -76,7 +91,7 @@ export class Storage {
 
               data[SESSION_STORAGE_ID] = this._sessionId;
 
-              this.local.set(SET_SESSION_STORAGE_KEY, data);
+              this.local.set(SET_SESSION_STORAGE_KEY, JSON.stringify(data));
               this.local.remove(SET_SESSION_STORAGE_KEY);
             }
           } catch {
@@ -90,23 +105,24 @@ export class Storage {
             if (this._isInitialized === true) return;
             this._isInitialized = true;
             if (eventData != null) {
-              for (let p in eventData) {
-                window.sessionStorage.setItem(p, eventData[p]);
+              let p: keyof EventData;
+              for (p in eventData) {
+                window.sessionStorage.setItem(p, eventData[p] ?? "");
               }
             }
           } catch {
             //do nothing here
           }
         } else if (
+          eventData?.key &&
+          eventData?.value &&
           event.key === ADD_TO_SESSION_STORAGE_KEY &&
           event.newValue != null
         ) {
-          try {
-            window.sessionStorage.setItem(eventData.key, eventData.value);
-          } catch {
-            //do nothing here
-          }
+          window.sessionStorage.setItem(eventData.key, eventData.value);
         } else if (
+          eventData?.key &&
+          eventData?.value &&
           event.key === DELETE_SESSION_STORAGE_KEY &&
           event.newValue != null
         ) {
@@ -127,34 +143,46 @@ export class Storage {
     // check if this is a new window.. if the session storage has nothing we will trigger
     // an event to request session storage from other tab
     if (this.session.length <= 0) {
-      this.local.set(GET_SESSION_STORAGE_KEY, {
-        [SESSION_STORAGE_ID]: this._sessionId
-      });
+      this.local.set(
+        GET_SESSION_STORAGE_KEY,
+        JSON.stringify({
+          [SESSION_STORAGE_ID]: this._sessionId
+        })
+      );
       this.local.remove(GET_SESSION_STORAGE_KEY);
     }
   }
 
   private onSetItem(key: string, value: string) {
-    this.local.set(ADD_TO_SESSION_STORAGE_KEY, {
-      key: key,
-      value: value,
-      [SESSION_STORAGE_ID]: this._sessionId
-    });
+    this.local.set(
+      ADD_TO_SESSION_STORAGE_KEY,
+      JSON.stringify({
+        key: key,
+        value: value,
+        [SESSION_STORAGE_ID]: this._sessionId
+      })
+    );
     this.local.remove(ADD_TO_SESSION_STORAGE_KEY);
   }
 
   private onDeleteItem(key: string) {
-    this.local.set(DELETE_SESSION_STORAGE_KEY, {
-      key: key,
-      [SESSION_STORAGE_ID]: this._sessionId
-    });
+    this.local.set(
+      DELETE_SESSION_STORAGE_KEY,
+      JSON.stringify({
+        key: key,
+        [SESSION_STORAGE_ID]: this._sessionId
+      })
+    );
     this.local.remove(DELETE_SESSION_STORAGE_KEY);
   }
 
   private onClearItems() {
-    this.local.set(CLEAR_SESSION_STORAGE_KEY, {
-      [SESSION_STORAGE_ID]: this._sessionId
-    });
+    this.local.set(
+      CLEAR_SESSION_STORAGE_KEY,
+      JSON.stringify({
+        [SESSION_STORAGE_ID]: this._sessionId
+      })
+    );
     this.local.remove(CLEAR_SESSION_STORAGE_KEY);
   }
 }

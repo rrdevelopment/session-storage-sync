@@ -36,13 +36,20 @@ var Storage = (function () {
         var _a;
         var _this = this;
         window.addEventListener(constants_1.WINDOW_STORAGE_EVENT, function (event) {
+            var _a, _b, _c, _d, _e;
             if (event == null) {
                 event = window.event;
             }
             if (event == null)
                 return;
             var data = event.newValue;
-            var eventData = data && JSON.parse(data);
+            var parsedData;
+            try {
+                parsedData = data && JSON.parse(data);
+            }
+            catch (_f) {
+            }
+            var eventData = parsedData;
             if (eventData != null &&
                 eventData[constants_1.SESSION_STORAGE_ID] === _this._sessionId)
                 return;
@@ -56,11 +63,11 @@ var Storage = (function () {
                             delete data_1[i];
                         });
                         data_1[constants_1.SESSION_STORAGE_ID] = _this._sessionId;
-                        _this.local.set(constants_1.SET_SESSION_STORAGE_KEY, data_1);
+                        _this.local.set(constants_1.SET_SESSION_STORAGE_KEY, JSON.stringify(data_1));
                         _this.local.remove(constants_1.SET_SESSION_STORAGE_KEY);
                     }
                 }
-                catch (_a) {
+                catch (_g) {
                     _this.local.remove(constants_1.SET_SESSION_STORAGE_KEY);
                 }
             }
@@ -71,23 +78,22 @@ var Storage = (function () {
                         return;
                     _this._isInitialized = true;
                     if (eventData != null) {
-                        for (var p in eventData) {
-                            window.sessionStorage.setItem(p, eventData[p]);
+                        var p = void 0;
+                        for (p in eventData) {
+                            window.sessionStorage.setItem(p, (_a = eventData[p], (_a !== null && _a !== void 0 ? _a : "")));
                         }
                     }
                 }
-                catch (_b) {
+                catch (_h) {
                 }
             }
-            else if (event.key === constants_1.ADD_TO_SESSION_STORAGE_KEY &&
+            else if (((_b = eventData) === null || _b === void 0 ? void 0 : _b.key) && ((_c = eventData) === null || _c === void 0 ? void 0 : _c.value) &&
+                event.key === constants_1.ADD_TO_SESSION_STORAGE_KEY &&
                 event.newValue != null) {
-                try {
-                    window.sessionStorage.setItem(eventData.key, eventData.value);
-                }
-                catch (_c) {
-                }
+                window.sessionStorage.setItem(eventData.key, eventData.value);
             }
-            else if (event.key === constants_1.DELETE_SESSION_STORAGE_KEY &&
+            else if (((_d = eventData) === null || _d === void 0 ? void 0 : _d.key) && ((_e = eventData) === null || _e === void 0 ? void 0 : _e.value) &&
+                event.key === constants_1.DELETE_SESSION_STORAGE_KEY &&
                 event.newValue != null) {
                 window.sessionStorage.removeItem(eventData.key);
             }
@@ -100,36 +106,36 @@ var Storage = (function () {
             passive: true
         });
         if (this.session.length <= 0) {
-            this.local.set(constants_1.GET_SESSION_STORAGE_KEY, (_a = {},
+            this.local.set(constants_1.GET_SESSION_STORAGE_KEY, JSON.stringify((_a = {},
                 _a[constants_1.SESSION_STORAGE_ID] = this._sessionId,
-                _a));
+                _a)));
             this.local.remove(constants_1.GET_SESSION_STORAGE_KEY);
         }
     };
     Storage.prototype.onSetItem = function (key, value) {
         var _a;
-        this.local.set(constants_1.ADD_TO_SESSION_STORAGE_KEY, (_a = {
+        this.local.set(constants_1.ADD_TO_SESSION_STORAGE_KEY, JSON.stringify((_a = {
                 key: key,
                 value: value
             },
             _a[constants_1.SESSION_STORAGE_ID] = this._sessionId,
-            _a));
+            _a)));
         this.local.remove(constants_1.ADD_TO_SESSION_STORAGE_KEY);
     };
     Storage.prototype.onDeleteItem = function (key) {
         var _a;
-        this.local.set(constants_1.DELETE_SESSION_STORAGE_KEY, (_a = {
+        this.local.set(constants_1.DELETE_SESSION_STORAGE_KEY, JSON.stringify((_a = {
                 key: key
             },
             _a[constants_1.SESSION_STORAGE_ID] = this._sessionId,
-            _a));
+            _a)));
         this.local.remove(constants_1.DELETE_SESSION_STORAGE_KEY);
     };
     Storage.prototype.onClearItems = function () {
         var _a;
-        this.local.set(constants_1.CLEAR_SESSION_STORAGE_KEY, (_a = {},
+        this.local.set(constants_1.CLEAR_SESSION_STORAGE_KEY, JSON.stringify((_a = {},
             _a[constants_1.SESSION_STORAGE_ID] = this._sessionId,
-            _a));
+            _a)));
         this.local.remove(constants_1.CLEAR_SESSION_STORAGE_KEY);
     };
     return Storage;
