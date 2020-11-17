@@ -75,6 +75,7 @@ export class Storage {
         )
           return;
 
+        // @ts-ignore
         if (eventData != null) delete eventData[SESSION_STORAGE_ID];
 
         if (event.key === GET_SESSION_STORAGE_KEY && event.newValue != null) {
@@ -86,6 +87,7 @@ export class Storage {
 
               //remove any ignored items
               this._ignored.forEach(i => {
+                // @ts-ignore
                 delete data[i];
               });
 
